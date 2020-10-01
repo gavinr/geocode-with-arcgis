@@ -1,0 +1,12 @@
+{
+  "version": 3,
+  "file": "bundle.css",
+  "sources": [
+    "App.svelte"
+  ],
+  "sourcesContent": [
+    "<script lang=\"ts\">import Papa from \"papaparse\";\r\nimport ChooseColumns from \"./ChooseColumns.svelte\";\r\nlet fileInput;\r\nlet columns = [];\r\nconst submitFormHandler = (evt) => {\r\n    evt.preventDefault();\r\n    const file = fileInput.files[0];\r\n    if (file) {\r\n        var reader = new FileReader();\r\n        reader.readAsText(file, \"UTF-8\");\r\n        reader.onload = function (evt) {\r\n            const result = Papa.parse(evt.target.result);\r\n            console.log(\"result\", result);\r\n            columns = result.data[0];\r\n        };\r\n        reader.onerror = function (evt) {\r\n            console.error(\"error!\", evt);\r\n        };\r\n    }\r\n};\r\nconst handleGeocode = (evt) => {\r\n    console.log(\"handleGeocode\", evt);\r\n};\r\n</script>\n\n<style>\n  main {\n    text-align: center;\n    padding: 1em;\n    max-width: 240px;\n    margin: 0 auto;\n  }\n\n  h1 {\n    color: #ff3e00;\n    text-transform: uppercase;\n    font-size: 4em;\n    font-weight: 100;\n  }\n\n  @media (min-width: 640px) {\n    main {\n      max-width: none;\n    }\n  }\n</style>\n\n<main>\n  <form on:submit={submitFormHandler}>\n    <input type=\"file\" accept=\"text/csv\" bind:this={fileInput} />\n    <input type=\"submit\" value=\"Upload\" />\n  </form>\n  <ChooseColumns {columns} on:geocode={handleGeocode} />\n</main>\n"
+  ],
+  "names": [],
+  "mappings": "AA0BE,IAAI,eAAC,CAAC,AACJ,UAAU,CAAE,MAAM,CAClB,OAAO,CAAE,GAAG,CACZ,SAAS,CAAE,KAAK,CAChB,MAAM,CAAE,CAAC,CAAC,IAAI,AAChB,CAAC,AASD,MAAM,AAAC,YAAY,KAAK,CAAC,AAAC,CAAC,AACzB,IAAI,eAAC,CAAC,AACJ,SAAS,CAAE,IAAI,AACjB,CAAC,AACH,CAAC"
+}
