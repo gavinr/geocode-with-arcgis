@@ -67,7 +67,7 @@
 </style>
 
 <main>
-  <h1>*ALPHA* Geocode with ArcGIS *ALPHA*</h1>
+  <h1>Geocode with ArcGIS *ALPHA*</h1>
   <h2>Upload CSV > Download Results as CSV</h2>
   <h2>*ALPHA SOFTWARE - DO NOT USE THIS UNLESS YOU KNOW WHAT YOU'RE DOING*</h2>
   <form on:submit={submitFormHandler}>
