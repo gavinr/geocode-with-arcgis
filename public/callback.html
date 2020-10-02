@@ -9,7 +9,9 @@
     <script src="https://unpkg.com/@esri/arcgis-rest-request@2.19.0/dist/umd/request.umd.min.js"></script>
     <script src="https://unpkg.com/@esri/arcgis-rest-auth@2.19.0/dist/umd/auth.umd.min.js"></script>
     <script>
-      const clientId = "3pW9jYgk9S8xBkgM";
+      const match = window.location.href.match(/&state=([^&]+)/);
+      const clientId = match[1];
+
       let session;
       function processAuthentication() {
         window.location.href = "./";

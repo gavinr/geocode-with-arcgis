@@ -5,8 +5,8 @@ export default function (columnInfos, data) {
   return new Promise((resolve, reject) => {
     UserSession.beginOAuth2({
       // register an app of your own to create a unique clientId
-      clientId: "3pW9jYgk9S8xBkgM",
-      redirectUri: `${window.location.href}/callback.html`,
+      clientId: "__CLIENT_ID__",
+      redirectUri: "__REDIRECT_URI__",
       popup: true,
     }).then((authentication) => {
       let addresses = data.map((row, i) => {
