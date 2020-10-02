@@ -68,19 +68,6 @@ var app = (function () {
     function children(element) {
         return Array.from(element.childNodes);
     }
-    function select_option(select, value) {
-        for (let i = 0; i < select.options.length; i += 1) {
-            const option = select.options[i];
-            if (option.__value === value) {
-                option.selected = true;
-                return;
-            }
-        }
-    }
-    function select_value(select) {
-        const selected_option = select.querySelector(':checked') || select.options[0];
-        return selected_option && selected_option.__value;
-    }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, false, false, detail);
@@ -95,6 +82,9 @@ var app = (function () {
         if (!current_component)
             throw new Error(`Function called outside component initialization`);
         return current_component;
+    }
+    function onMount(fn) {
+        get_current_component().$$.on_mount.push(fn);
     }
     function createEventDispatcher() {
         const component = get_current_component();
@@ -432,22 +422,22 @@ var app = (function () {
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i];
+    	child_ctx[9] = list[i];
     	return child_ctx;
     }
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[7] = list[i];
-    	child_ctx[8] = list;
-    	child_ctx[9] = i;
+    	child_ctx[6] = list[i];
+    	child_ctx[7] = list;
+    	child_ctx[8] = i;
     	return child_ctx;
     }
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[7] = list[i];
-    	child_ctx[9] = i;
+    	child_ctx[6] = list[i];
+    	child_ctx[8] = i;
     	return child_ctx;
     }
 
@@ -499,7 +489,7 @@ var app = (function () {
     			add_location(tr0, file, 28, 4, 625);
     			add_location(tr1, file, 33, 4, 728);
     			add_location(table, file, 27, 2, 612);
-    			add_location(button, file, 46, 2, 1125);
+    			add_location(button, file, 46, 2, 1105);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, table, anchor);
@@ -549,7 +539,7 @@ var app = (function () {
     				each_blocks_1.length = each_value_2.length;
     			}
 
-    			if (dirty & /*columns, columnSelects, geocodingAttributes*/ 7) {
+    			if (dirty & /*columnSelects, geocodingAttributes, columns*/ 7) {
     				each_value = /*columns*/ ctx[0];
     				validate_each_argument(each_value);
     				let i;
@@ -598,7 +588,7 @@ var app = (function () {
     // (30:6) {#each columns as column, index}
     function create_each_block_2(ctx) {
     	let td;
-    	let t_value = /*column*/ ctx[7] + "";
+    	let t_value = /*column*/ ctx[6] + "";
     	let t;
 
     	const block = {
@@ -612,7 +602,7 @@ var app = (function () {
     			append_dev(td, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*columns*/ 1 && t_value !== (t_value = /*column*/ ctx[7] + "")) set_data_dev(t, t_value);
+    			if (dirty & /*columns*/ 1 && t_value !== (t_value = /*column*/ ctx[6] + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
@@ -633,7 +623,7 @@ var app = (function () {
     // (39:12) {#each geocodingAttributes as geocodingAttribute}
     function create_each_block_1(ctx) {
     	let option;
-    	let t_value = /*geocodingAttribute*/ ctx[10] + "";
+    	let t_value = /*geocodingAttribute*/ ctx[9] + "";
     	let t;
     	let option_value_value;
 
@@ -641,9 +631,9 @@ var app = (function () {
     		c: function create() {
     			option = element("option");
     			t = text(t_value);
-    			option.__value = option_value_value = /*geocodingAttribute*/ ctx[10];
+    			option.__value = option_value_value = /*geocodingAttribute*/ ctx[9];
     			option.value = option.__value;
-    			add_location(option, file, 39, 14, 962);
+    			add_location(option, file, 39, 14, 942);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -671,10 +661,8 @@ var app = (function () {
     	let td;
     	let select;
     	let option;
-    	let index = /*index*/ ctx[9];
+    	let index = /*index*/ ctx[8];
     	let t;
-    	let mounted;
-    	let dispose;
     	let each_value_1 = /*geocodingAttributes*/ ctx[2];
     	validate_each_argument(each_value_1);
     	let each_blocks = [];
@@ -683,12 +671,8 @@ var app = (function () {
     		each_blocks[i] = create_each_block_1(get_each_context_1(ctx, each_value_1, i));
     	}
 
-    	function select_change_handler() {
-    		/*select_change_handler*/ ctx[4].call(select, /*each_value*/ ctx[8], /*index*/ ctx[9]);
-    	}
-
-    	const assign_select = () => /*select_binding*/ ctx[5](select, index);
-    	const unassign_select = () => /*select_binding*/ ctx[5](null, index);
+    	const assign_select = () => /*select_binding*/ ctx[4](select, index);
+    	const unassign_select = () => /*select_binding*/ ctx[4](null, index);
 
     	const block = {
     		c: function create() {
@@ -703,8 +687,7 @@ var app = (function () {
     			t = space();
     			option.__value = "";
     			option.value = option.__value;
-    			add_location(option, file, 37, 12, 873);
-    			if (/*column*/ ctx[7] === void 0) add_render_callback(select_change_handler);
+    			add_location(option, file, 37, 12, 853);
     			add_location(select, file, 36, 10, 798);
     			add_location(td, file, 35, 8, 782);
     		},
@@ -717,14 +700,8 @@ var app = (function () {
     				each_blocks[i].m(select, null);
     			}
 
-    			select_option(select, /*column*/ ctx[7]);
     			assign_select();
     			append_dev(td, t);
-
-    			if (!mounted) {
-    				dispose = listen_dev(select, "change", select_change_handler);
-    				mounted = true;
-    			}
     		},
     		p: function update(new_ctx, dirty) {
     			ctx = new_ctx;
@@ -753,13 +730,9 @@ var app = (function () {
     				each_blocks.length = each_value_1.length;
     			}
 
-    			if (dirty & /*columns*/ 1) {
-    				select_option(select, /*column*/ ctx[7]);
-    			}
-
-    			if (index !== /*index*/ ctx[9]) {
+    			if (index !== /*index*/ ctx[8]) {
     				unassign_select();
-    				index = /*index*/ ctx[9];
+    				index = /*index*/ ctx[8];
     				assign_select();
     			}
     		},
@@ -767,8 +740,6 @@ var app = (function () {
     			if (detaching) detach_dev(td);
     			destroy_each(each_blocks, detaching);
     			unassign_select();
-    			mounted = false;
-    			dispose();
     		}
     	};
 
@@ -857,11 +828,6 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<ChooseColumns> was created with unknown prop '${key}'`);
     	});
 
-    	function select_change_handler(each_value, index) {
-    		each_value[index] = select_value(this);
-    		$$invalidate(0, columns);
-    	}
-
     	function select_binding($$value, index) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
     			columnSelects[index] = $$value;
@@ -897,7 +863,6 @@ var app = (function () {
     		columnSelects,
     		geocodingAttributes,
     		geocodeButtonClickHandler,
-    		select_change_handler,
     		select_binding
     	];
     }
@@ -931,19 +896,1491 @@ var app = (function () {
     	}
     }
 
+    /*! *****************************************************************************
+    Copyright (c) Microsoft Corporation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
+    ***************************************************************************** */
+
+    var __assign = function() {
+        __assign = Object.assign || function __assign(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign.apply(this, arguments);
+    };
+
+    /*! *****************************************************************************
+    Copyright (c) Microsoft Corporation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
+    ***************************************************************************** */
+    /* global Reflect, Promise */
+
+    var extendStatics = function(d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+
+    function __extends(d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    }
+
+    var __assign$1 = function() {
+        __assign$1 = Object.assign || function __assign(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign$1.apply(this, arguments);
+    };
+
+    /* Copyright (c) 2017 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    /**
+     * Checks parameters to see if we should use FormData to send the request
+     * @param params The object whose keys will be encoded.
+     * @return A boolean indicating if FormData will be required.
+     */
+    function requiresFormData(params) {
+        return Object.keys(params).some(function (key) {
+            var value = params[key];
+            if (!value) {
+                return false;
+            }
+            if (value && value.toParam) {
+                value = value.toParam();
+            }
+            var type = value.constructor.name;
+            switch (type) {
+                case "Array":
+                    return false;
+                case "Object":
+                    return false;
+                case "Date":
+                    return false;
+                case "Function":
+                    return false;
+                case "Boolean":
+                    return false;
+                case "String":
+                    return false;
+                case "Number":
+                    return false;
+                default:
+                    return true;
+            }
+        });
+    }
+    /**
+     * Converts parameters to the proper representation to send to the ArcGIS REST API.
+     * @param params The object whose keys will be encoded.
+     * @return A new object with properly encoded values.
+     */
+    function processParams(params) {
+        var newParams = {};
+        Object.keys(params).forEach(function (key) {
+            var param = params[key];
+            if (param && param.toParam) {
+                param = param.toParam();
+            }
+            if (!param &&
+                param !== 0 &&
+                typeof param !== "boolean" &&
+                typeof param !== "string") {
+                return;
+            }
+            var type = param.constructor.name;
+            var value;
+            // properly encodes objects, arrays and dates for arcgis.com and other services.
+            // ported from https://github.com/Esri/esri-leaflet/blob/master/src/Request.js#L22-L30
+            // also see https://github.com/Esri/arcgis-rest-js/issues/18:
+            // null, undefined, function are excluded. If you want to send an empty key you need to send an empty string "".
+            switch (type) {
+                case "Array":
+                    // Based on the first element of the array, classify array as an array of objects to be stringified
+                    // or an array of non-objects to be comma-separated
+                    value =
+                        param[0] &&
+                            param[0].constructor &&
+                            param[0].constructor.name === "Object"
+                            ? JSON.stringify(param)
+                            : param.join(",");
+                    break;
+                case "Object":
+                    value = JSON.stringify(param);
+                    break;
+                case "Date":
+                    value = param.valueOf();
+                    break;
+                case "Function":
+                    value = null;
+                    break;
+                case "Boolean":
+                    value = param + "";
+                    break;
+                default:
+                    value = param;
+                    break;
+            }
+            if (value || value === 0 || typeof value === "string") {
+                newParams[key] = value;
+            }
+        });
+        return newParams;
+    }
+
+    /* Copyright (c) 2017 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    function encodeParam(key, value) {
+        return encodeURIComponent(key) + "=" + encodeURIComponent(value);
+    }
+    /**
+     * Encodes the passed object as a query string.
+     *
+     * @param params An object to be encoded.
+     * @returns An encoded query string.
+     */
+    function encodeQueryString(params) {
+        var newParams = processParams(params);
+        return Object.keys(newParams)
+            .map(function (key) {
+            return encodeParam(key, newParams[key]);
+        })
+            .join("&");
+    }
+
+    /* Copyright (c) 2017 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    /**
+     * Encodes parameters in a [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) object in browsers or in a [FormData](https://github.com/form-data/form-data) in Node.js
+     *
+     * @param params An object to be encoded.
+     * @returns The complete [FormData](https://developer.mozilla.org/en-US/docs/Web/API/FormData) object.
+     */
+    function encodeFormData(params, forceFormData) {
+        // see https://github.com/Esri/arcgis-rest-js/issues/499 for more info.
+        var useFormData = requiresFormData(params) || forceFormData;
+        var newParams = processParams(params);
+        if (useFormData) {
+            var formData_1 = new FormData();
+            Object.keys(newParams).forEach(function (key) {
+                if (typeof Blob !== "undefined" && newParams[key] instanceof Blob) {
+                    /* To name the Blob:
+                     1. look to an alternate request parameter called 'fileName'
+                     2. see if 'name' has been tacked onto the Blob manually
+                     3. if all else fails, use the request parameter
+                    */
+                    var filename = newParams["fileName"] || newParams[key].name || key;
+                    formData_1.append(key, newParams[key], filename);
+                }
+                else {
+                    formData_1.append(key, newParams[key]);
+                }
+            });
+            return formData_1;
+        }
+        else {
+            return encodeQueryString(params);
+        }
+    }
+
+    /* Copyright (c) 2017 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    // TypeScript 2.1 no longer allows you to extend built in types. See https://github.com/Microsoft/TypeScript/issues/12790#issuecomment-265981442
+    // and https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+    //
+    // This code is from MDN https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#Custom_Error_Types.
+    var ArcGISRequestError = /** @class */ (function () {
+        /**
+         * Create a new `ArcGISRequestError`  object.
+         *
+         * @param message - The error message from the API
+         * @param code - The error code from the API
+         * @param response - The original response from the API that caused the error
+         * @param url - The original url of the request
+         * @param options - The original options and parameters of the request
+         */
+        function ArcGISRequestError(message, code, response, url, options) {
+            message = message || "UNKNOWN_ERROR";
+            code = code || "UNKNOWN_ERROR_CODE";
+            this.name = "ArcGISRequestError";
+            this.message =
+                code === "UNKNOWN_ERROR_CODE" ? message : code + ": " + message;
+            this.originalMessage = message;
+            this.code = code;
+            this.response = response;
+            this.url = url;
+            this.options = options;
+        }
+        return ArcGISRequestError;
+    }());
+    ArcGISRequestError.prototype = Object.create(Error.prototype);
+    ArcGISRequestError.prototype.constructor = ArcGISRequestError;
+
+    /* Copyright (c) 2017-2018 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    var NODEJS_DEFAULT_REFERER_HEADER = "@esri/arcgis-rest-js";
+    var DEFAULT_ARCGIS_REQUEST_OPTIONS = {
+        httpMethod: "POST",
+        params: {
+            f: "json"
+        }
+    };
+    var ArcGISAuthError = /** @class */ (function (_super) {
+        __extends(ArcGISAuthError, _super);
+        /**
+         * Create a new `ArcGISAuthError`  object.
+         *
+         * @param message - The error message from the API
+         * @param code - The error code from the API
+         * @param response - The original response from the API that caused the error
+         * @param url - The original url of the request
+         * @param options - The original options of the request
+         */
+        function ArcGISAuthError(message, code, response, url, options) {
+            if (message === void 0) { message = "AUTHENTICATION_ERROR"; }
+            if (code === void 0) { code = "AUTHENTICATION_ERROR_CODE"; }
+            var _this = _super.call(this, message, code, response, url, options) || this;
+            _this.name = "ArcGISAuthError";
+            _this.message =
+                code === "AUTHENTICATION_ERROR_CODE" ? message : code + ": " + message;
+            return _this;
+        }
+        ArcGISAuthError.prototype.retry = function (getSession, retryLimit) {
+            var _this = this;
+            if (retryLimit === void 0) { retryLimit = 3; }
+            var tries = 0;
+            var retryRequest = function (resolve, reject) {
+                getSession(_this.url, _this.options)
+                    .then(function (session) {
+                    var newOptions = __assign$1(__assign$1({}, _this.options), { authentication: session });
+                    tries = tries + 1;
+                    return request(_this.url, newOptions);
+                })
+                    .then(function (response) {
+                    resolve(response);
+                })
+                    .catch(function (e) {
+                    if (e.name === "ArcGISAuthError" && tries < retryLimit) {
+                        retryRequest(resolve, reject);
+                    }
+                    else if (e.name === "ArcGISAuthError" && tries >= retryLimit) {
+                        reject(_this);
+                    }
+                    else {
+                        reject(e);
+                    }
+                });
+            };
+            return new Promise(function (resolve, reject) {
+                retryRequest(resolve, reject);
+            });
+        };
+        return ArcGISAuthError;
+    }(ArcGISRequestError));
+    /**
+     * Checks for errors in a JSON response from the ArcGIS REST API. If there are no errors, it will return the `data` passed in. If there is an error, it will throw an `ArcGISRequestError` or `ArcGISAuthError`.
+     *
+     * @param data The response JSON to check for errors.
+     * @param url The url of the original request
+     * @param params The parameters of the original request
+     * @param options The options of the original request
+     * @returns The data that was passed in the `data` parameter
+     */
+    function checkForErrors(response, url, params, options, originalAuthError) {
+        // this is an error message from billing.arcgis.com backend
+        if (response.code >= 400) {
+            var message = response.message, code = response.code;
+            throw new ArcGISRequestError(message, code, response, url, options);
+        }
+        // error from ArcGIS Online or an ArcGIS Portal or server instance.
+        if (response.error) {
+            var _a = response.error, message = _a.message, code = _a.code, messageCode = _a.messageCode;
+            var errorCode = messageCode || code || "UNKNOWN_ERROR_CODE";
+            if (code === 498 ||
+                code === 499 ||
+                messageCode === "GWM_0003" ||
+                (code === 400 && message === "Unable to generate token.")) {
+                if (originalAuthError) {
+                    throw originalAuthError;
+                }
+                else {
+                    throw new ArcGISAuthError(message, errorCode, response, url, options);
+                }
+            }
+            throw new ArcGISRequestError(message, errorCode, response, url, options);
+        }
+        // error from a status check
+        if (response.status === "failed" || response.status === "failure") {
+            var message = void 0;
+            var code = "UNKNOWN_ERROR_CODE";
+            try {
+                message = JSON.parse(response.statusMessage).message;
+                code = JSON.parse(response.statusMessage).code;
+            }
+            catch (e) {
+                message = response.statusMessage || response.message;
+            }
+            throw new ArcGISRequestError(message, code, response, url, options);
+        }
+        return response;
+    }
+    /**
+     * ```js
+     * import { request } from '@esri/arcgis-rest-request';
+     * //
+     * request('https://www.arcgis.com/sharing/rest')
+     *   .then(response) // response.currentVersion === 5.2
+     * //
+     * request('https://www.arcgis.com/sharing/rest', {
+     *   httpMethod: "GET"
+     * })
+     * //
+     * request('https://www.arcgis.com/sharing/rest/search', {
+     *   params: { q: 'parks' }
+     * })
+     *   .then(response) // response.total => 78379
+     * ```
+     * Generic method for making HTTP requests to ArcGIS REST API endpoints.
+     *
+     * @param url - The URL of the ArcGIS REST API endpoint.
+     * @param requestOptions - Options for the request, including parameters relevant to the endpoint.
+     * @returns A Promise that will resolve with the data from the response.
+     */
+    function request(url, requestOptions) {
+        if (requestOptions === void 0) { requestOptions = { params: { f: "json" } }; }
+        var options = __assign$1(__assign$1(__assign$1({ httpMethod: "POST" }, DEFAULT_ARCGIS_REQUEST_OPTIONS), requestOptions), {
+            params: __assign$1(__assign$1({}, DEFAULT_ARCGIS_REQUEST_OPTIONS.params), requestOptions.params),
+            headers: __assign$1(__assign$1({}, DEFAULT_ARCGIS_REQUEST_OPTIONS.headers), requestOptions.headers)
+        });
+        var missingGlobals = [];
+        var recommendedPackages = [];
+        // don't check for a global fetch if a custom implementation was passed through
+        if (!options.fetch && typeof fetch !== "undefined") {
+            options.fetch = fetch.bind(Function("return this")());
+        }
+        else {
+            missingGlobals.push("`fetch`");
+            recommendedPackages.push("`node-fetch`");
+        }
+        if (typeof Promise === "undefined") {
+            missingGlobals.push("`Promise`");
+            recommendedPackages.push("`es6-promise`");
+        }
+        if (typeof FormData === "undefined") {
+            missingGlobals.push("`FormData`");
+            recommendedPackages.push("`isomorphic-form-data`");
+        }
+        if (!options.fetch ||
+            typeof Promise === "undefined" ||
+            typeof FormData === "undefined") {
+            throw new Error("`arcgis-rest-request` requires a `fetch` implementation and global variables for `Promise` and `FormData` to be present in the global scope. You are missing " + missingGlobals.join(", ") + ". We recommend installing the " + recommendedPackages.join(", ") + " modules at the root of your application to add these to the global scope. See https://bit.ly/2KNwWaJ for more info.");
+        }
+        var httpMethod = options.httpMethod, authentication = options.authentication, rawResponse = options.rawResponse;
+        var params = __assign$1({ f: "json" }, options.params);
+        var originalAuthError = null;
+        var fetchOptions = {
+            method: httpMethod,
+            /* ensures behavior mimics XMLHttpRequest.
+            needed to support sending IWA cookies */
+            credentials: "same-origin"
+        };
+        return (authentication
+            ? authentication.getToken(url, { fetch: options.fetch }).catch(function (err) {
+                /**
+                 * append original request url and requestOptions
+                 * to the error thrown by getToken()
+                 * to assist with retrying
+                 */
+                err.url = url;
+                err.options = options;
+                /**
+                 * if an attempt is made to talk to an unfederated server
+                 * first try the request anonymously. if a 'token required'
+                 * error is thrown, throw the UNFEDERATED error then.
+                 */
+                originalAuthError = err;
+                return Promise.resolve("");
+            })
+            : Promise.resolve(""))
+            .then(function (token) {
+            if (token.length) {
+                params.token = token;
+            }
+            // Custom headers to add to request. IRequestOptions.headers with merge over requestHeaders.
+            var requestHeaders = {};
+            if (fetchOptions.method === "GET") {
+                // Prevents token from being passed in query params when hideToken option is used.
+                /* istanbul ignore if - window is always defined in a browser. Test case is covered by Jasmine in node test */
+                if (params.token && options.hideToken &&
+                    // Sharing API does not support preflight check required by modern browsers https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request
+                    typeof window === 'undefined') {
+                    requestHeaders["X-Esri-Authorization"] = "Bearer " + params.token;
+                    delete params.token;
+                }
+                // encode the parameters into the query string
+                var queryParams = encodeQueryString(params);
+                // dont append a '?' unless parameters are actually present
+                var urlWithQueryString = queryParams === "" ? url : url + "?" + encodeQueryString(params);
+                if (
+                // This would exceed the maximum length for URLs specified by the consumer and requires POST
+                (options.maxUrlLength &&
+                    urlWithQueryString.length > options.maxUrlLength) ||
+                    // Or if the customer requires the token to be hidden and it has not already been hidden in the header (for browsers)
+                    (params.token && options.hideToken)) {
+                    // the consumer specified a maximum length for URLs
+                    // and this would exceed it, so use post instead
+                    fetchOptions.method = "POST";
+                    // If the token was already added as a Auth header, add the token back to body with other params instead of header
+                    if (token.length && options.hideToken) {
+                        params.token = token;
+                        // Remove existing header that was added before url query length was checked
+                        delete requestHeaders["X-Esri-Authorization"];
+                    }
+                }
+                else {
+                    // just use GET
+                    url = urlWithQueryString;
+                }
+            }
+            /* updateResources currently requires FormData even when the input parameters dont warrant it.
+        https://developers.arcgis.com/rest/users-groups-and-items/update-resources.htm
+            see https://github.com/Esri/arcgis-rest-js/pull/500 for more info. */
+            var forceFormData = new RegExp("/items/.+/updateResources").test(url);
+            if (fetchOptions.method === "POST") {
+                fetchOptions.body = encodeFormData(params, forceFormData);
+            }
+            // Mixin headers from request options
+            fetchOptions.headers = __assign$1(__assign$1({}, requestHeaders), options.headers);
+            /* istanbul ignore next - karma reports coverage on browser tests only */
+            if (typeof window === "undefined" && !fetchOptions.headers.referer) {
+                fetchOptions.headers.referer = NODEJS_DEFAULT_REFERER_HEADER;
+            }
+            /* istanbul ignore else blob responses are difficult to make cross platform we will just have to trust the isomorphic fetch will do its job */
+            if (!requiresFormData(params) && !forceFormData) {
+                fetchOptions.headers["Content-Type"] =
+                    "application/x-www-form-urlencoded";
+            }
+            return options.fetch(url, fetchOptions);
+        })
+            .then(function (response) {
+            if (!response.ok) {
+                // server responded w/ an actual error (404, 500, etc)
+                var status_1 = response.status, statusText = response.statusText;
+                throw new ArcGISRequestError(statusText, "HTTP " + status_1, response, url, options);
+            }
+            if (rawResponse) {
+                return response;
+            }
+            switch (params.f) {
+                case "json":
+                    return response.json();
+                case "geojson":
+                    return response.json();
+                case "html":
+                    return response.text();
+                case "text":
+                    return response.text();
+                /* istanbul ignore next blob responses are difficult to make cross platform we will just have to trust that isomorphic fetch will do its job */
+                default:
+                    return response.blob();
+            }
+        })
+            .then(function (data) {
+            if ((params.f === "json" || params.f === "geojson") && !rawResponse) {
+                var response = checkForErrors(data, url, params, options, originalAuthError);
+                if (originalAuthError) {
+                    /* if the request was made to an unfederated service that
+                    didnt require authentication, add the base url and a dummy token
+                    to the list of trusted servers to avoid another federation check
+                    in the event of a repeat request */
+                    var truncatedUrl = url
+                        .toLowerCase()
+                        .split(/\/rest(\/admin)?\/services\//)[0];
+                    options.authentication.trustedServers[truncatedUrl] = {
+                        token: [],
+                        // default to 24 hours
+                        expires: new Date(Date.now() + 86400 * 1000)
+                    };
+                    originalAuthError = null;
+                }
+                return response;
+            }
+            else {
+                return data;
+            }
+        });
+    }
+
+    /* Copyright (c) 2018 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    /**
+     * Helper method to ensure that user supplied urls don't include whitespace or a trailing slash.
+     */
+    function cleanUrl(url) {
+        // Guard so we don't try to trim something that's not a string
+        if (typeof url !== "string") {
+            return url;
+        }
+        // trim leading and trailing spaces, but not spaces inside the url
+        url = url.trim();
+        // remove the trailing slash to the url if one was included
+        if (url[url.length - 1] === "/") {
+            url = url.slice(0, -1);
+        }
+        return url;
+    }
+
+    /* Copyright (c) 2017-2020 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    function decodeParam(param) {
+        var _a = param.split("="), key = _a[0], value = _a[1];
+        return { key: decodeURIComponent(key), value: decodeURIComponent(value) };
+    }
+    /**
+     * Decodes the passed query string as an object.
+     *
+     * @param query A string to be decoded.
+     * @returns A decoded query param object.
+     */
+    function decodeQueryString(query) {
+        return query
+            .replace(/^#/, "")
+            .split("&")
+            .reduce(function (acc, entry) {
+            var _a = decodeParam(entry), key = _a.key, value = _a.value;
+            acc[key] = value;
+            return acc;
+        }, {});
+    }
+
+    /* Copyright (c) 2017 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    function fetchToken(url, requestOptions) {
+        var options = requestOptions;
+        // we generate a response, so we can't return the raw response
+        options.rawResponse = false;
+        return request(url, options).then(function (response) {
+            var r = {
+                token: response.access_token,
+                username: response.username,
+                expires: new Date(
+                // convert seconds in response to milliseconds and add the value to the current time to calculate a static expiration timestamp
+                Date.now() + (response.expires_in * 1000 - 1000)),
+                ssl: response.ssl === true
+            };
+            if (response.refresh_token) {
+                r.refreshToken = response.refresh_token;
+            }
+            return r;
+        });
+    }
+
+    /* Copyright (c) 2017-2018 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    function generateToken(url, requestOptions) {
+        var options = requestOptions;
+        /* istanbul ignore else */
+        if (typeof window !== "undefined" &&
+            window.location &&
+            window.location.host) {
+            options.params.referer = window.location.host;
+        }
+        else {
+            options.params.referer = NODEJS_DEFAULT_REFERER_HEADER;
+        }
+        return request(url, options);
+    }
+
+    /**
+     * Used to test if a URL is an ArcGIS Online URL
+     */
+    var arcgisOnlineUrlRegex = /^https?:\/\/(\S+)\.arcgis\.com.+/;
+    function isOnline(url) {
+        return arcgisOnlineUrlRegex.test(url);
+    }
+    function normalizeOnlinePortalUrl(portalUrl) {
+        if (!arcgisOnlineUrlRegex.test(portalUrl)) {
+            return portalUrl;
+        }
+        switch (getOnlineEnvironment(portalUrl)) {
+            case "dev":
+                return "https://devext.arcgis.com/sharing/rest";
+            case "qa":
+                return "https://qaext.arcgis.com/sharing/rest";
+            default:
+                return "https://www.arcgis.com/sharing/rest";
+        }
+    }
+    function getOnlineEnvironment(url) {
+        if (!arcgisOnlineUrlRegex.test(url)) {
+            return null;
+        }
+        var match = url.match(arcgisOnlineUrlRegex);
+        var subdomain = match[1].split(".").pop();
+        if (subdomain.includes("dev")) {
+            return "dev";
+        }
+        if (subdomain.includes("qa")) {
+            return "qa";
+        }
+        return "production";
+    }
+    function isFederated(owningSystemUrl, portalUrl) {
+        var normalizedPortalUrl = cleanUrl(normalizeOnlinePortalUrl(portalUrl)).replace(/https?:\/\//, "");
+        var normalizedOwningSystemUrl = cleanUrl(owningSystemUrl).replace(/https?:\/\//, "");
+        return new RegExp(normalizedOwningSystemUrl, "i").test(normalizedPortalUrl);
+    }
+    function canUseOnlineToken(portalUrl, requestUrl) {
+        var portalIsOnline = isOnline(portalUrl);
+        var requestIsOnline = isOnline(requestUrl);
+        var portalEnv = getOnlineEnvironment(portalUrl);
+        var requestEnv = getOnlineEnvironment(requestUrl);
+        if (portalIsOnline && requestIsOnline && portalEnv === requestEnv) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Copyright (c) 2017-2019 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    function defer() {
+        var deferred = {
+            promise: null,
+            resolve: null,
+            reject: null
+        };
+        deferred.promise = new Promise(function (resolve, reject) {
+            deferred.resolve = resolve;
+            deferred.reject = reject;
+        });
+        return deferred;
+    }
+    /**
+     * ```js
+     * import { UserSession } from '@esri/arcgis-rest-auth';
+     * UserSession.beginOAuth2({
+     *   // register an app of your own to create a unique clientId
+     *   clientId: "abc123",
+     *   redirectUri: 'https://yourapp.com/authenticate.html'
+     * })
+     *   .then(session)
+     * // or
+     * new UserSession({
+     *   username: "jsmith",
+     *   password: "123456"
+     * })
+     * // or
+     * UserSession.deserialize(cache)
+     * ```
+     * Used to authenticate both ArcGIS Online and ArcGIS Enterprise users. `UserSession` includes helper methods for [OAuth 2.0](/arcgis-rest-js/guides/browser-authentication/) in both browser and server applications.
+     */
+    var UserSession = /** @class */ (function () {
+        function UserSession(options) {
+            this.clientId = options.clientId;
+            this._refreshToken = options.refreshToken;
+            this._refreshTokenExpires = options.refreshTokenExpires;
+            this.username = options.username;
+            this.password = options.password;
+            this._token = options.token;
+            this._tokenExpires = options.tokenExpires;
+            this.portal = options.portal
+                ? cleanUrl(options.portal)
+                : "https://www.arcgis.com/sharing/rest";
+            this.ssl = options.ssl;
+            this.provider = options.provider || "arcgis";
+            this.tokenDuration = options.tokenDuration || 20160;
+            this.redirectUri = options.redirectUri;
+            this.refreshTokenTTL = options.refreshTokenTTL || 1440;
+            this.trustedServers = {};
+            // if a non-federated server was passed explicitly, it should be trusted.
+            if (options.server) {
+                // if the url includes more than '/arcgis/', trim the rest
+                var root = this.getServerRootUrl(options.server);
+                this.trustedServers[root] = {
+                    token: options.token,
+                    expires: options.tokenExpires
+                };
+            }
+            this._pendingTokenRequests = {};
+        }
+        /**
+         * Begins a new browser-based OAuth 2.0 sign in. If `options.popup` is `true` the
+         * authentication window will open in a new tab/window otherwise the user will
+         * be redirected to the authorization page in their current tab/window.
+         *
+         * @browserOnly
+         */
+        /* istanbul ignore next */
+        UserSession.beginOAuth2 = function (options, win) {
+            if (win === void 0) { win = window; }
+            var _a = __assign({
+                portal: "https://www.arcgis.com/sharing/rest",
+                provider: "arcgis",
+                duration: 20160,
+                popup: true,
+                state: options.clientId,
+                locale: ""
+            }, options), portal = _a.portal, provider = _a.provider, clientId = _a.clientId, duration = _a.duration, redirectUri = _a.redirectUri, popup = _a.popup, state = _a.state, locale = _a.locale, params = _a.params;
+            var url;
+            if (provider === "arcgis") {
+                url = portal + "/oauth2/authorize?client_id=" + clientId + "&response_type=token&expiration=" + duration + "&redirect_uri=" + encodeURIComponent(redirectUri) + "&state=" + state + "&locale=" + locale;
+            }
+            else {
+                url = portal + "/oauth2/social/authorize?client_id=" + clientId + "&socialLoginProviderName=" + provider + "&autoAccountCreateForSocial=true&response_type=token&expiration=" + duration + "&redirect_uri=" + encodeURIComponent(redirectUri) + "&state=" + state + "&locale=" + locale;
+            }
+            // append additional params
+            if (params) {
+                url = url + "&" + encodeQueryString(params);
+            }
+            if (!popup) {
+                win.location.href = url;
+                return undefined;
+            }
+            var session = defer();
+            win["__ESRI_REST_AUTH_HANDLER_" + clientId] = function (errorString, oauthInfoString) {
+                if (errorString) {
+                    var error = JSON.parse(errorString);
+                    session.reject(new ArcGISAuthError(error.errorMessage, error.error));
+                    return;
+                }
+                if (oauthInfoString) {
+                    var oauthInfo = JSON.parse(oauthInfoString);
+                    session.resolve(new UserSession({
+                        clientId: clientId,
+                        portal: portal,
+                        ssl: oauthInfo.ssl,
+                        token: oauthInfo.token,
+                        tokenExpires: new Date(oauthInfo.expires),
+                        username: oauthInfo.username
+                    }));
+                }
+            };
+            win.open(url, "oauth-window", "height=400,width=600,menubar=no,location=yes,resizable=yes,scrollbars=yes,status=yes");
+            return session.promise;
+        };
+        /**
+         * Completes a browser-based OAuth 2.0  in. If `options.popup` is `true` the user
+         * will be returned to the previous window. Otherwise a new `UserSession`
+         * will be returned. You must pass the same values for `options.popup` and
+         * `options.portal` as you used in `beginOAuth2()`.
+         *
+         * @browserOnly
+         */
+        /* istanbul ignore next */
+        UserSession.completeOAuth2 = function (options, win) {
+            if (win === void 0) { win = window; }
+            var _a = __assign({ portal: "https://www.arcgis.com/sharing/rest", popup: true }, options), portal = _a.portal, clientId = _a.clientId, popup = _a.popup;
+            function completeSignIn(error, oauthInfo) {
+                try {
+                    var handlerFn = void 0;
+                    var handlerFnName = "__ESRI_REST_AUTH_HANDLER_" + clientId;
+                    if (popup) {
+                        // Guard b/c IE does not support window.opener
+                        if (win.opener) {
+                            if (win.opener.parent && win.opener.parent[handlerFnName]) {
+                                handlerFn = win.opener.parent[handlerFnName];
+                            }
+                            else if (win.opener && win.opener[handlerFnName]) {
+                                // support pop-out oauth from within an iframe
+                                handlerFn = win.opener[handlerFnName];
+                            }
+                        }
+                        else {
+                            // IE
+                            if (win !== win.parent && win.parent && win.parent[handlerFnName]) {
+                                handlerFn = win.parent[handlerFnName];
+                            }
+                        }
+                        // if we have a handler fn, call it and close the window
+                        if (handlerFn) {
+                            handlerFn(error ? JSON.stringify(error) : undefined, JSON.stringify(oauthInfo));
+                            win.close();
+                            return undefined;
+                        }
+                    }
+                }
+                catch (e) {
+                    throw new ArcGISAuthError("Unable to complete authentication. It's possible you specified popup based oAuth2 but no handler from \"beginOAuth2()\" present. This generally happens because the \"popup\" option differs between \"beginOAuth2()\" and \"completeOAuth2()\".");
+                }
+                if (error) {
+                    throw new ArcGISAuthError(error.errorMessage, error.error);
+                }
+                return new UserSession({
+                    clientId: clientId,
+                    portal: portal,
+                    ssl: oauthInfo.ssl,
+                    token: oauthInfo.token,
+                    tokenExpires: oauthInfo.expires,
+                    username: oauthInfo.username
+                });
+            }
+            var params = decodeQueryString(win.location.hash);
+            if (!params.access_token) {
+                var error = void 0;
+                var errorMessage = "Unknown error";
+                if (params.error) {
+                    error = params.error;
+                    errorMessage = params.error_description;
+                }
+                return completeSignIn({ error: error, errorMessage: errorMessage });
+            }
+            var token = params.access_token;
+            var expires = new Date(Date.now() + parseInt(params.expires_in, 10) * 1000 - 60 * 1000);
+            var username = params.username;
+            var ssl = params.ssl === "true";
+            return completeSignIn(undefined, {
+                token: token,
+                expires: expires,
+                ssl: ssl,
+                username: username
+            });
+        };
+        /**
+         * Begins a new server-based OAuth 2.0 sign in. This will redirect the user to
+         * the ArcGIS Online or ArcGIS Enterprise authorization page.
+         *
+         * @nodeOnly
+         */
+        UserSession.authorize = function (options, response) {
+            var _a = __assign({ portal: "https://arcgis.com/sharing/rest", duration: 20160 }, options), portal = _a.portal, clientId = _a.clientId, duration = _a.duration, redirectUri = _a.redirectUri;
+            response.writeHead(301, {
+                Location: portal + "/oauth2/authorize?client_id=" + clientId + "&duration=" + duration + "&response_type=code&redirect_uri=" + encodeURIComponent(redirectUri)
+            });
+            response.end();
+        };
+        /**
+         * Completes the server-based OAuth 2.0 sign in process by exchanging the `authorizationCode`
+         * for a `access_token`.
+         *
+         * @nodeOnly
+         */
+        UserSession.exchangeAuthorizationCode = function (options, authorizationCode) {
+            var _a = __assign({
+                portal: "https://www.arcgis.com/sharing/rest",
+                refreshTokenTTL: 1440
+            }, options), portal = _a.portal, clientId = _a.clientId, redirectUri = _a.redirectUri, refreshTokenTTL = _a.refreshTokenTTL;
+            return fetchToken(portal + "/oauth2/token", {
+                params: {
+                    grant_type: "authorization_code",
+                    client_id: clientId,
+                    redirect_uri: redirectUri,
+                    code: authorizationCode
+                }
+            }).then(function (response) {
+                return new UserSession({
+                    clientId: clientId,
+                    portal: portal,
+                    ssl: response.ssl,
+                    redirectUri: redirectUri,
+                    refreshToken: response.refreshToken,
+                    refreshTokenTTL: refreshTokenTTL,
+                    refreshTokenExpires: new Date(Date.now() + (refreshTokenTTL - 1) * 1000),
+                    token: response.token,
+                    tokenExpires: response.expires,
+                    username: response.username
+                });
+            });
+        };
+        UserSession.deserialize = function (str) {
+            var options = JSON.parse(str);
+            return new UserSession({
+                clientId: options.clientId,
+                refreshToken: options.refreshToken,
+                refreshTokenExpires: new Date(options.refreshTokenExpires),
+                username: options.username,
+                password: options.password,
+                token: options.token,
+                tokenExpires: new Date(options.tokenExpires),
+                portal: options.portal,
+                ssl: options.ssl,
+                tokenDuration: options.tokenDuration,
+                redirectUri: options.redirectUri,
+                refreshTokenTTL: options.refreshTokenTTL
+            });
+        };
+        /**
+         * Translates authentication from the format used in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/).
+         *
+         * ```js
+         * UserSession.fromCredential({
+         *   userId: "jsmith",
+         *   token: "secret"
+         * });
+         * ```
+         *
+         * @returns UserSession
+         */
+        UserSession.fromCredential = function (credential) {
+            return new UserSession({
+                portal: credential.server.includes("sharing/rest")
+                    ? credential.server
+                    : credential.server + "/sharing/rest",
+                ssl: credential.ssl,
+                token: credential.token,
+                username: credential.userId,
+                tokenExpires: new Date(credential.expires)
+            });
+        };
+        Object.defineProperty(UserSession.prototype, "token", {
+            /**
+             * The current ArcGIS Online or ArcGIS Enterprise `token`.
+             */
+            get: function () {
+                return this._token;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(UserSession.prototype, "tokenExpires", {
+            /**
+             * The expiration time of the current `token`.
+             */
+            get: function () {
+                return this._tokenExpires;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(UserSession.prototype, "refreshToken", {
+            /**
+             * The current token to ArcGIS Online or ArcGIS Enterprise.
+             */
+            get: function () {
+                return this._refreshToken;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        Object.defineProperty(UserSession.prototype, "refreshTokenExpires", {
+            /**
+             * The expiration time of the current `refreshToken`.
+             */
+            get: function () {
+                return this._refreshTokenExpires;
+            },
+            enumerable: false,
+            configurable: true
+        });
+        /**
+         * Returns authentication in a format useable in the [ArcGIS API for JavaScript](https://developers.arcgis.com/javascript/).
+         *
+         * ```js
+         * esriId.registerToken(session.toCredential());
+         * ```
+         *
+         * @returns ICredential
+         */
+        UserSession.prototype.toCredential = function () {
+            return {
+                expires: this.tokenExpires.getTime(),
+                server: this.portal,
+                ssl: this.ssl,
+                token: this.token,
+                userId: this.username
+            };
+        };
+        /**
+         * Returns information about the currently logged in [user](https://developers.arcgis.com/rest/users-groups-and-items/user.htm). Subsequent calls will *not* result in additional web traffic.
+         *
+         * ```js
+         * session.getUser()
+         *   .then(response => {
+         *     console.log(response.role); // "org_admin"
+         *   })
+         * ```
+         *
+         * @param requestOptions - Options for the request. NOTE: `rawResponse` is not supported by this operation.
+         * @returns A Promise that will resolve with the data from the response.
+         */
+        UserSession.prototype.getUser = function (requestOptions) {
+            var _this = this;
+            if (this._pendingUserRequest) {
+                return this._pendingUserRequest;
+            }
+            else if (this._user) {
+                return Promise.resolve(this._user);
+            }
+            else {
+                var url = this.portal + "/community/self";
+                var options = __assign(__assign({ httpMethod: "GET", authentication: this }, requestOptions), { rawResponse: false });
+                this._pendingUserRequest = request(url, options).then(function (response) {
+                    _this._user = response;
+                    _this._pendingUserRequest = null;
+                    return response;
+                });
+                return this._pendingUserRequest;
+            }
+        };
+        /**
+         * Returns the username for the currently logged in [user](https://developers.arcgis.com/rest/users-groups-and-items/user.htm). Subsequent calls will *not* result in additional web traffic. This is also used internally when a username is required for some requests but is not present in the options.
+         *
+         *    * ```js
+         * session.getUsername()
+         *   .then(response => {
+         *     console.log(response); // "casey_jones"
+         *   })
+         * ```
+         */
+        UserSession.prototype.getUsername = function () {
+            if (this.username) {
+                return Promise.resolve(this.username);
+            }
+            else if (this._user) {
+                return Promise.resolve(this._user.username);
+            }
+            else {
+                return this.getUser().then(function (user) {
+                    return user.username;
+                });
+            }
+        };
+        /**
+         * Gets an appropriate token for the given URL. If `portal` is ArcGIS Online and
+         * the request is to an ArcGIS Online domain `token` will be used. If the request
+         * is to the current `portal` the current `token` will also be used. However if
+         * the request is to an unknown server we will validate the server with a request
+         * to our current `portal`.
+         */
+        UserSession.prototype.getToken = function (url, requestOptions) {
+            if (canUseOnlineToken(this.portal, url)) {
+                return this.getFreshToken(requestOptions);
+            }
+            else if (new RegExp(this.portal, "i").test(url)) {
+                return this.getFreshToken(requestOptions);
+            }
+            else {
+                return this.getTokenForServer(url, requestOptions);
+            }
+        };
+        UserSession.prototype.toJSON = function () {
+            return {
+                clientId: this.clientId,
+                refreshToken: this.refreshToken,
+                refreshTokenExpires: this.refreshTokenExpires,
+                username: this.username,
+                password: this.password,
+                token: this.token,
+                tokenExpires: this.tokenExpires,
+                portal: this.portal,
+                ssl: this.ssl,
+                tokenDuration: this.tokenDuration,
+                redirectUri: this.redirectUri,
+                refreshTokenTTL: this.refreshTokenTTL
+            };
+        };
+        UserSession.prototype.serialize = function () {
+            return JSON.stringify(this);
+        };
+        /**
+         * Manually refreshes the current `token` and `tokenExpires`.
+         */
+        UserSession.prototype.refreshSession = function (requestOptions) {
+            // make sure subsequent calls to getUser() don't returned cached metadata
+            this._user = null;
+            if (this.username && this.password) {
+                return this.refreshWithUsernameAndPassword(requestOptions);
+            }
+            if (this.clientId && this.refreshToken) {
+                return this.refreshWithRefreshToken();
+            }
+            return Promise.reject(new ArcGISAuthError("Unable to refresh token."));
+        };
+        /**
+         * Determines the root of the ArcGIS Server or Portal for a given URL.
+         *
+         * @param url the URl to determine the root url for.
+         */
+        UserSession.prototype.getServerRootUrl = function (url) {
+            var root = cleanUrl(url).split(/\/rest(\/admin)?\/services(?:\/|#|\?|$)/)[0];
+            var _a = root.match(/(https?:\/\/)(.+)/), match = _a[0], protocol = _a[1], domainAndPath = _a[2];
+            var _b = domainAndPath.split("/"), domain = _b[0], path = _b.slice(1);
+            // only the domain is lowercased becasue in some cases an org id might be
+            // in the path which cannot be lowercased.
+            return "" + protocol + domain.toLowerCase() + "/" + path.join("/");
+        };
+        /**
+         * Validates that a given URL is properly federated with our current `portal`.
+         * Attempts to use the internal `trustedServers` cache first.
+         */
+        UserSession.prototype.getTokenForServer = function (url, requestOptions) {
+            var _this = this;
+            // requests to /rest/services/ and /rest/admin/services/ are both valid
+            // Federated servers may have inconsistent casing, so lowerCase it
+            var root = this.getServerRootUrl(url);
+            var existingToken = this.trustedServers[root];
+            if (existingToken &&
+                existingToken.expires &&
+                existingToken.expires.getTime() > Date.now()) {
+                return Promise.resolve(existingToken.token);
+            }
+            if (this._pendingTokenRequests[root]) {
+                return this._pendingTokenRequests[root];
+            }
+            this._pendingTokenRequests[root] = request(root + "/rest/info")
+                .then(function (response) {
+                if (response.owningSystemUrl) {
+                    /**
+                     * if this server is not owned by this portal
+                     * bail out with an error since we know we wont
+                     * be able to generate a token
+                     */
+                    if (!isFederated(response.owningSystemUrl, _this.portal)) {
+                        throw new ArcGISAuthError(url + " is not federated with " + _this.portal + ".", "NOT_FEDERATED");
+                    }
+                    else {
+                        /**
+                         * if the server is federated, use the relevant token endpoint.
+                         */
+                        return request(response.owningSystemUrl + "/sharing/rest/info", requestOptions);
+                    }
+                }
+                else if (response.authInfo &&
+                    _this.trustedServers[root] !== undefined) {
+                    /**
+                     * if its a stand-alone instance of ArcGIS Server that doesn't advertise
+                     * federation, but the root server url is recognized, use its built in token endpoint.
+                     */
+                    return Promise.resolve({ authInfo: response.authInfo });
+                }
+                else {
+                    throw new ArcGISAuthError(url + " is not federated with any portal and is not explicitly trusted.", "NOT_FEDERATED");
+                }
+            })
+                .then(function (response) {
+                return response.authInfo.tokenServicesUrl;
+            })
+                .then(function (tokenServicesUrl) {
+                // an expired token cant be used to generate a new token
+                if (_this.token && _this.tokenExpires.getTime() > Date.now()) {
+                    return generateToken(tokenServicesUrl, {
+                        params: {
+                            token: _this.token,
+                            serverUrl: url,
+                            expiration: _this.tokenDuration,
+                            client: "referer"
+                        }
+                    });
+                    // generate an entirely fresh token if necessary
+                }
+                else {
+                    return generateToken(tokenServicesUrl, {
+                        params: {
+                            username: _this.username,
+                            password: _this.password,
+                            expiration: _this.tokenDuration,
+                            client: "referer"
+                        }
+                    }).then(function (response) {
+                        _this._token = response.token;
+                        _this._tokenExpires = new Date(response.expires);
+                        return response;
+                    });
+                }
+            })
+                .then(function (response) {
+                _this.trustedServers[root] = {
+                    expires: new Date(response.expires),
+                    token: response.token
+                };
+                delete _this._pendingTokenRequests[root];
+                return response.token;
+            });
+            return this._pendingTokenRequests[root];
+        };
+        /**
+         * Returns an unexpired token for the current `portal`.
+         */
+        UserSession.prototype.getFreshToken = function (requestOptions) {
+            var _this = this;
+            if (this.token && !this.tokenExpires) {
+                return Promise.resolve(this.token);
+            }
+            if (this.token &&
+                this.tokenExpires &&
+                this.tokenExpires.getTime() > Date.now()) {
+                return Promise.resolve(this.token);
+            }
+            if (!this._pendingTokenRequests[this.portal]) {
+                this._pendingTokenRequests[this.portal] = this.refreshSession(requestOptions).then(function (session) {
+                    _this._pendingTokenRequests[_this.portal] = null;
+                    return session.token;
+                });
+            }
+            return this._pendingTokenRequests[this.portal];
+        };
+        /**
+         * Refreshes the current `token` and `tokenExpires` with `username` and
+         * `password`.
+         */
+        UserSession.prototype.refreshWithUsernameAndPassword = function (requestOptions) {
+            var _this = this;
+            var options = __assign({ params: {
+                    username: this.username,
+                    password: this.password,
+                    expiration: this.tokenDuration
+                } }, requestOptions);
+            return generateToken(this.portal + "/generateToken", options).then(function (response) {
+                _this._token = response.token;
+                _this._tokenExpires = new Date(response.expires);
+                return _this;
+            });
+        };
+        /**
+         * Refreshes the current `token` and `tokenExpires` with `refreshToken`.
+         */
+        UserSession.prototype.refreshWithRefreshToken = function (requestOptions) {
+            var _this = this;
+            if (this.refreshToken &&
+                this.refreshTokenExpires &&
+                this.refreshTokenExpires.getTime() < Date.now()) {
+                return this.refreshRefreshToken(requestOptions);
+            }
+            var options = __assign({ params: {
+                    client_id: this.clientId,
+                    refresh_token: this.refreshToken,
+                    grant_type: "refresh_token"
+                } }, requestOptions);
+            return fetchToken(this.portal + "/oauth2/token", options).then(function (response) {
+                _this._token = response.token;
+                _this._tokenExpires = response.expires;
+                return _this;
+            });
+        };
+        /**
+         * Exchanges an unexpired `refreshToken` for a new one, also updates `token` and
+         * `tokenExpires`.
+         */
+        UserSession.prototype.refreshRefreshToken = function (requestOptions) {
+            var _this = this;
+            var options = __assign({ params: {
+                    client_id: this.clientId,
+                    refresh_token: this.refreshToken,
+                    redirect_uri: this.redirectUri,
+                    grant_type: "exchange_refresh_token"
+                } }, requestOptions);
+            return fetchToken(this.portal + "/oauth2/token", options).then(function (response) {
+                _this._token = response.token;
+                _this._tokenExpires = response.expires;
+                _this._refreshToken = response.refreshToken;
+                _this._refreshTokenExpires = new Date(Date.now() + (_this.refreshTokenTTL - 1) * 60 * 1000);
+                return _this;
+            });
+        };
+        return UserSession;
+    }());
+
+    /*! *****************************************************************************
+    Copyright (c) Microsoft Corporation.
+
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
+
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
+    ***************************************************************************** */
+
+    var __assign$2 = function() {
+        __assign$2 = Object.assign || function __assign(t) {
+            for (var s, i = 1, n = arguments.length; i < n; i++) {
+                s = arguments[i];
+                for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+            }
+            return t;
+        };
+        return __assign$2.apply(this, arguments);
+    };
+
+    /* Copyright (c) 2017 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    // https always
+    var ARCGIS_ONLINE_GEOCODING_URL = "https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/";
+
+    /* Copyright (c) 2017-2018 Environmental Systems Research Institute, Inc.
+     * Apache-2.0 */
+    /**
+     * ```js
+     * import { bulkGeocode } from '@esri/arcgis-rest-geocoding';
+     * import { ApplicationSession } from '@esri/arcgis-rest-auth';
+     * //
+     * const addresses = [
+     *   { "OBJECTID": 1, "SingleLine": "380 New York Street 92373" },
+     *   { "OBJECTID": 2, "SingleLine": "1 World Way Los Angeles 90045" }
+     * ];
+     * //
+     * bulkGeocode({ addresses, authentication: session })
+     *   .then((response) => {
+     *     response.locations[0].location; // => { x: -117, y: 34, spatialReference: { wkid: 4326 } }
+     *   });
+     * ```
+     * Used to geocode a [batch](https://developers.arcgis.com/rest/geocode/api-reference/geocoding-geocode-addresses.htm) of addresses.
+     *
+     * @param requestOptions - Request options to pass to the geocoder, including an array of addresses and authentication session.
+     * @returns A Promise that will resolve with the data from the response. The spatial reference will be added to address locations unless `rawResponse: true` was passed.
+     */
+    function bulkGeocode(requestOptions // must POST, which is the default
+    ) {
+        var options = __assign$2({ endpoint: ARCGIS_ONLINE_GEOCODING_URL, params: {} }, requestOptions);
+        options.params.addresses = {
+            records: requestOptions.addresses.map(function (address) {
+                return { attributes: address };
+            })
+        };
+        // the SAS service doesnt support anonymous requests
+        if (!requestOptions.authentication &&
+            options.endpoint === ARCGIS_ONLINE_GEOCODING_URL) {
+            return Promise.reject("bulk geocoding using the ArcGIS service requires authentication");
+        }
+        return request(cleanUrl(options.endpoint) + "/geocodeAddresses", options).then(function (response) {
+            if (options.rawResponse) {
+                return response;
+            }
+            var sr = response.spatialReference;
+            response.locations.forEach(function (address) {
+                if (address.location) {
+                    address.location.spatialReference = sr;
+                }
+            });
+            return response;
+        });
+    }
+
+    function Geocode (columnInfos, data) {
+        return new Promise((resolve, reject) => {
+            UserSession.beginOAuth2({
+                // register an app of your own to create a unique clientId
+                clientId: "3pW9jYgk9S8xBkgM",
+                redirectUri: "http://localhost:5000/callback.html",
+                popup: true,
+            }).then((authentication) => {
+                let addresses = data.map((row, i) => {
+                    let geocodingOptions = { OBJECTID: i };
+                    columnInfos.forEach((columnInfo) => {
+                        if (columnInfo.geocodingAttribute !== "") {
+                            geocodingOptions[columnInfo.geocodingAttribute] =
+                                row[columnInfo.column];
+                        }
+                    });
+                    return geocodingOptions;
+                });
+                bulkGeocode({
+                    addresses,
+                    authentication,
+                }).then((response) => {
+                    const mergedData = Object.assign([], data);
+                    response.locations.forEach((locationInfo) => {
+                        if (locationInfo.hasOwnProperty("location")) {
+                            mergedData[locationInfo.attributes.ResultID].x =
+                                locationInfo.location.x;
+                            mergedData[locationInfo.attributes.ResultID].y =
+                                locationInfo.location.y;
+                        }
+                        else {
+                            mergedData[locationInfo.attributes.ResultID].x = 0;
+                            mergedData[locationInfo.attributes.ResultID].y = 0;
+                        }
+                        mergedData[locationInfo.attributes.ResultID].score =
+                            locationInfo.score;
+                    });
+                    resolve(mergedData);
+                }, (err) => {
+                    reject(err);
+                });
+            });
+        });
+    }
+
     /* src\App.svelte generated by Svelte v3.29.0 */
 
     const { console: console_1 } = globals;
     const file$1 = "src\\App.svelte";
 
+    // (73:2) {#if geocodeResultsCSVURL}
+    function create_if_block$1(ctx) {
+    	let a;
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			a = element("a");
+    			t = text("Download\n      Results!");
+    			attr_dev(a, "download", "geocodeResults.csv");
+    			attr_dev(a, "href", /*geocodeResultsCSVURL*/ ctx[2]);
+    			add_location(a, file$1, 73, 4, 2074);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, a, anchor);
+    			append_dev(a, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*geocodeResultsCSVURL*/ 4) {
+    				attr_dev(a, "href", /*geocodeResultsCSVURL*/ ctx[2]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(a);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(73:2) {#if geocodeResultsCSVURL}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
     function create_fragment$1(ctx) {
     	let main;
+    	let h1;
+    	let t1;
+    	let h20;
+    	let t3;
+    	let h21;
+    	let t5;
     	let form;
     	let input0;
-    	let t0;
+    	let t6;
     	let input1;
-    	let t1;
+    	let t7;
     	let choosecolumns;
+    	let t8;
     	let current;
     	let mounted;
     	let dispose;
@@ -953,43 +2390,67 @@ var app = (function () {
     			$$inline: true
     		});
 
-    	choosecolumns.$on("geocode", /*handleGeocode*/ ctx[3]);
+    	choosecolumns.$on("geocode", /*handleGeocode*/ ctx[4]);
+    	let if_block = /*geocodeResultsCSVURL*/ ctx[2] && create_if_block$1(ctx);
 
     	const block = {
     		c: function create() {
     			main = element("main");
+    			h1 = element("h1");
+    			h1.textContent = "*ALPHA* Geocode with ArcGIS *ALPHA*";
+    			t1 = space();
+    			h20 = element("h2");
+    			h20.textContent = "Upload CSV > Download Results as CSV";
+    			t3 = space();
+    			h21 = element("h2");
+    			h21.textContent = "*ALPHA SOFTWARE - DO NOT USE THIS UNLESS YOU KNOW WHAT YOU'RE DOING*";
+    			t5 = space();
     			form = element("form");
     			input0 = element("input");
-    			t0 = space();
+    			t6 = space();
     			input1 = element("input");
-    			t1 = space();
+    			t7 = space();
     			create_component(choosecolumns.$$.fragment);
+    			t8 = space();
+    			if (if_block) if_block.c();
+    			attr_dev(h1, "class", "svelte-1e9puaw");
+    			add_location(h1, file$1, 64, 2, 1653);
+    			add_location(h20, file$1, 65, 2, 1700);
+    			add_location(h21, file$1, 66, 2, 1748);
     			attr_dev(input0, "type", "file");
     			attr_dev(input0, "accept", "text/csv");
-    			add_location(input0, file$1, 49, 4, 1079);
+    			add_location(input0, file$1, 68, 4, 1869);
     			attr_dev(input1, "type", "submit");
     			input1.value = "Upload";
-    			add_location(input1, file$1, 50, 4, 1145);
-    			add_location(form, file$1, 48, 2, 1038);
+    			add_location(input1, file$1, 69, 4, 1935);
+    			add_location(form, file$1, 67, 2, 1828);
     			attr_dev(main, "class", "svelte-1e9puaw");
-    			add_location(main, file$1, 47, 0, 1029);
+    			add_location(main, file$1, 63, 0, 1644);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
+    			append_dev(main, h1);
+    			append_dev(main, t1);
+    			append_dev(main, h20);
+    			append_dev(main, t3);
+    			append_dev(main, h21);
+    			append_dev(main, t5);
     			append_dev(main, form);
     			append_dev(form, input0);
-    			/*input0_binding*/ ctx[4](input0);
-    			append_dev(form, t0);
+    			/*input0_binding*/ ctx[5](input0);
+    			append_dev(form, t6);
     			append_dev(form, input1);
-    			append_dev(main, t1);
+    			append_dev(main, t7);
     			mount_component(choosecolumns, main, null);
+    			append_dev(main, t8);
+    			if (if_block) if_block.m(main, null);
     			current = true;
 
     			if (!mounted) {
-    				dispose = listen_dev(form, "submit", /*submitFormHandler*/ ctx[2], false, false, false);
+    				dispose = listen_dev(form, "submit", /*submitFormHandler*/ ctx[3], false, false, false);
     				mounted = true;
     			}
     		},
@@ -997,6 +2458,19 @@ var app = (function () {
     			const choosecolumns_changes = {};
     			if (dirty & /*columns*/ 2) choosecolumns_changes.columns = /*columns*/ ctx[1];
     			choosecolumns.$set(choosecolumns_changes);
+
+    			if (/*geocodeResultsCSVURL*/ ctx[2]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$1(ctx);
+    					if_block.c();
+    					if_block.m(main, null);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -1009,8 +2483,9 @@ var app = (function () {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
-    			/*input0_binding*/ ctx[4](null);
+    			/*input0_binding*/ ctx[5](null);
     			destroy_component(choosecolumns);
+    			if (if_block) if_block.d();
     			mounted = false;
     			dispose();
     		}
@@ -1032,6 +2507,9 @@ var app = (function () {
     	validate_slots("App", slots, []);
     	let fileInput;
     	let columns = [];
+    	let csv;
+    	let geocodeResultsCSV;
+    	let geocodeResultsCSVURL;
 
     	const submitFormHandler = evt => {
     		evt.preventDefault();
@@ -1041,10 +2519,13 @@ var app = (function () {
     			var reader = new FileReader();
     			reader.readAsText(file, "UTF-8");
 
-    			reader.onload = function (evt) {
-    				const result = papaparse_min.parse(evt.target.result);
+    			reader.onload = function (e) {
+    				console.log("result:", this.result);
+    				const text = this.result;
+    				const result = papaparse_min.parse(text, { header: true });
     				console.log("result", result);
-    				$$invalidate(1, columns = result.data[0]);
+    				$$invalidate(1, columns = result.meta.fields);
+    				csv = result.data;
     			};
 
     			reader.onerror = function (evt) {
@@ -1054,7 +2535,14 @@ var app = (function () {
     	};
 
     	const handleGeocode = evt => {
-    		console.log("handleGeocode", evt);
+    		console.log("handleGeocode", evt.detail);
+
+    		Geocode(evt.detail, csv).then(geocodeResults => {
+    			console.log("geocodeResults!", geocodeResults);
+    			geocodeResultsCSV = papaparse_min.unparse(geocodeResults);
+    			var blob = new Blob(["﻿", geocodeResultsCSV]);
+    			$$invalidate(2, geocodeResultsCSVURL = URL.createObjectURL(blob));
+    		});
     	};
 
     	const writable_props = [];
@@ -1071,10 +2559,17 @@ var app = (function () {
     	}
 
     	$$self.$capture_state = () => ({
-    		Papa: papaparse_min,
+    		onMount,
+    		parse: papaparse_min.parse,
+    		unparse: papaparse_min.unparse,
+    		ParseResult: papaparse_min.ParseResult,
     		ChooseColumns,
+    		Geocode,
     		fileInput,
     		columns,
+    		csv,
+    		geocodeResultsCSV,
+    		geocodeResultsCSVURL,
     		submitFormHandler,
     		handleGeocode
     	});
@@ -1082,13 +2577,23 @@ var app = (function () {
     	$$self.$inject_state = $$props => {
     		if ("fileInput" in $$props) $$invalidate(0, fileInput = $$props.fileInput);
     		if ("columns" in $$props) $$invalidate(1, columns = $$props.columns);
+    		if ("csv" in $$props) csv = $$props.csv;
+    		if ("geocodeResultsCSV" in $$props) geocodeResultsCSV = $$props.geocodeResultsCSV;
+    		if ("geocodeResultsCSVURL" in $$props) $$invalidate(2, geocodeResultsCSVURL = $$props.geocodeResultsCSVURL);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [fileInput, columns, submitFormHandler, handleGeocode, input0_binding];
+    	return [
+    		fileInput,
+    		columns,
+    		geocodeResultsCSVURL,
+    		submitFormHandler,
+    		handleGeocode,
+    		input0_binding
+    	];
     }
 
     class App extends SvelteComponentDev {

@@ -39,7 +39,7 @@
     <tr>
       {#each columns as column, index}
         <td>
-          <select bind:value={column} bind:this={columnSelects[index]}>
+          <select bind:this={columnSelects[index]}>
             <option />
             {#each geocodingAttributes as geocodingAttribute}
               <option value={geocodingAttribute}>{geocodingAttribute}</option>
