@@ -6,7 +6,7 @@ export default function (columnInfos, data) {
     UserSession.beginOAuth2({
       // register an app of your own to create a unique clientId
       clientId: "3pW9jYgk9S8xBkgM",
-      redirectUri: "http://localhost:5000/callback.html",
+      redirectUri: `${window.location.href}/callback.html`,
       popup: true,
     }).then((authentication) => {
       let addresses = data.map((row, i) => {
