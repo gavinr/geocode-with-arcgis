@@ -3,6 +3,7 @@
 
   import { parse, unparse, ParseResult } from "papaparse";
   import ChooseColumns from "./ChooseColumns.svelte";
+  import CreditEstimate from "./CreditEstimate.svelte";
   import Geocode from "./Geocode";
 
   let fileInput;
@@ -75,6 +76,9 @@
     <input type="submit" value="Upload" />
   </form>
   <ChooseColumns {columns} on:geocode={handleGeocode} />
+  {#if csv}
+    <CreditEstimate rows={csv} />
+  {/if}
   {#if geocodeResultsCSVURL}
     <a download="geocodeResults.csv" href={geocodeResultsCSVURL}>Download
       Results!</a>

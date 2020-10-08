@@ -10,6 +10,7 @@
   "devDependencies": {
     "@esri/arcgis-rest-auth": "^2.19.0",
     "@esri/arcgis-rest-geocoding": "^2.19.0",
+    "@esri/arcgis-rest-portal": "^2.19.1",
     "@esri/arcgis-rest-request": "^2.19.0",
     "@rollup/plugin-commonjs": "^14.0.0",
     "@rollup/plugin-node-resolve": "^8.0.0",
