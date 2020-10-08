@@ -1,36 +1,37 @@
 <script lang="ts">
-  import { onMount } from "svelte";
-
   import { parse, unparse, ParseResult } from "papaparse";
   import ChooseColumns from "./ChooseColumns.svelte";
   import CreditEstimate from "./CreditEstimate.svelte";
   import Geocode from "./Geocode";
 
-  let fileInput;
+  let files: FileList;
   let columns = [];
-  let csv: [];
+  let csv: any[];
   let geocodeResultsCSV: string;
   let geocodeResultsCSVURL: string;
 
-  const submitFormHandler = (evt: Event) => {
-    evt.preventDefault();
-    const file = fileInput.files[0];
-    if (file) {
-      var reader = new FileReader();
-      reader.readAsText(file, "UTF-8");
-      reader.onload = function (e: Event) {
-        console.log("result:", this.result);
-        const text = this.result as string;
-        const result: ParseResult<any> = parse(text, {
-          header: true,
-        });
-        console.log("result", result);
-        columns = result.meta.fields;
-        csv = result.data;
-      };
-      reader.onerror = function (evt) {
-        console.error("error!", evt);
-      };
+  $: newFileHandler(files);
+
+  const newFileHandler = (fileList: FileList) => {
+    if(fileList && fileList.length === 1) {
+      const file = fileList[0];
+      if (file) {
+        var reader = new FileReader();
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function (e: Event) {
+          console.log("result:", this.result);
+          const text = this.result as string;
+          const result: ParseResult<any> = parse(text, {
+            header: true,
+          });
+          console.log("result", result);
+          columns = result.meta.fields;
+          csv = result.data;
+        };
+        reader.onerror = function (evt) {
+          console.error("error!", evt);
+        };
+      }
     }
   };
 
@@ -69,12 +70,9 @@
 
 <main>
   <h1>Geocode with ArcGIS *ALPHA*</h1>
-  <h2>Upload CSV > Download Results as CSV</h2>
+  <h2>Upload CSV &gt; Download Results as CSV</h2>
   <h2>*ALPHA SOFTWARE - DO NOT USE THIS UNLESS YOU KNOW WHAT YOU'RE DOING*</h2>
-  <form on:submit={submitFormHandler}>
-    <input type="file" accept="text/csv" bind:this={fileInput} />
-    <input type="submit" value="Upload" />
-  </form>
+  <input type="file" accept="text/csv" bind:files />
   <ChooseColumns {columns} on:geocode={handleGeocode} />
   {#if csv}
     <CreditEstimate rows={csv} />

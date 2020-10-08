@@ -1,5 +1,5 @@
-<script>
-  export let rows;
+<script lang="ts">
+  export let rows: any[];
 
   let creditsEstimate;
 
