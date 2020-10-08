@@ -75,7 +75,7 @@
   <input type="file" accept="text/csv" bind:files />
   <ChooseColumns {columns} on:geocode={handleGeocode} />
   {#if csv}
-    <CreditEstimate rows={csv} />
+    <br /><CreditEstimate rows={csv} />
   {/if}
   {#if geocodeResultsCSVURL}
     <a download="geocodeResults.csv" href={geocodeResultsCSVURL}>Download

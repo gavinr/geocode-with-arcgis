@@ -27,6 +27,9 @@
 </script>
 
 <style>
+  table {
+    margin: 0 auto;
+  }
 </style>
 
 {#if columns.length > 0}
