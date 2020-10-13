@@ -19,12 +19,11 @@
         var reader = new FileReader();
         reader.readAsText(file, "UTF-8");
         reader.onload = function (e: Event) {
-          console.log("result:", this.result);
           const text = this.result as string;
           const result: ParseResult<any> = parse(text, {
             header: true,
           });
-          console.log("result", result);
+          // console.log("result", result);
           columns = result.meta.fields;
           csv = result.data;
         };
@@ -36,9 +35,7 @@
   };
 
   const handleGeocode = (evt) => {
-    console.log("handleGeocode", evt.detail);
     Geocode(evt.detail, csv).then((geocodeResults: object[]) => {
-      console.log("geocodeResults!", geocodeResults);
       geocodeResultsCSV = unparse(geocodeResults);
       var blob = new Blob(["\ufeff", geocodeResultsCSV]);
       geocodeResultsCSVURL = URL.createObjectURL(blob);
@@ -66,19 +63,27 @@
       max-width: none;
     }
   }
+  footer {
+    text-align: center;
+  }
 </style>
 
 <main>
-  <h1>Geocode with ArcGIS *ALPHA*</h1>
+  <h1>Geocode with ArcGIS</h1>
   <h2>Upload CSV &gt; Download Results as CSV</h2>
-  <h2>*ALPHA SOFTWARE - DO NOT USE THIS UNLESS YOU KNOW WHAT YOU'RE DOING*</h2>
   <input type="file" accept="text/csv" bind:files />
   <ChooseColumns {columns} on:geocode={handleGeocode} />
   {#if csv}
     <br /><CreditEstimate rows={csv} />
   {/if}
+  <br /><br />
   {#if geocodeResultsCSVURL}
     <a download="geocodeResults.csv" href={geocodeResultsCSVURL}>Download
       Results!</a>
   {/if}
 </main>
+
+<footer>
+  ---<br />
+  <a href="https://github.com/gavinr/geocode-with-arcgis">GitHub</a>
+</footer>
