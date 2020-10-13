@@ -70,7 +70,7 @@
 
 <main>
   <h1>Geocode with ArcGIS</h1>
-  <h2>Upload CSV &gt; Download Results as CSV</h2>
+  <h3>Geocode using the ArcGIS World Geocoder via CSV</h3>
   <input type="file" accept="text/csv" bind:files />
   <ChooseColumns {columns} on:geocode={handleGeocode} />
   {#if csv}
